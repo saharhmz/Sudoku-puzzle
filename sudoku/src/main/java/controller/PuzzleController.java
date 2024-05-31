@@ -319,6 +319,7 @@ public class PuzzleController {
     }
     @FXML
     void resetHandler(ActionEvent event) {
+        updatePuzzle(getInitialIndividual());
     }
 
 
