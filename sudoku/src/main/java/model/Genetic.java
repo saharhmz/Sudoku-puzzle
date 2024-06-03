@@ -90,5 +90,31 @@ public class Genetic {
         return conflicts;
     }
 
+    private List<int[][]> crossover(int[][] parent1, int[][] parent2) {
+        int[][] child1 = new int[9][9];
+        int[][] child2 = new int[9][9];
+
+
+        int crossoverPoint = random.nextInt(8) + 1;
+
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (col < crossoverPoint) {
+                    child1[row][col] = parent1[row][col];
+                    child2[row][col] = parent2[row][col];
+                } else {
+                    child1[row][col] = parent2[row][col];
+                    child2[row][col] = parent1[row][col];
+                }
+            }
+        }
+
+        List<int[][]> child = new ArrayList<>();
+        child.add(child1);
+        child.add(child2);
+
+        return child;
+    }
+
 
 }
