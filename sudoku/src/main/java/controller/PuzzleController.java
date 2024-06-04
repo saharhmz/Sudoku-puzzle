@@ -307,10 +307,25 @@ public class PuzzleController {
 
         return initialIndividual;
     }
-
-    @FXML
+   @FXML
     void geneticSolverHandler(ActionEvent event) {
-
+        int[][] population =getInitialIndividual();
+        Genetic genetic = new Genetic(population);
+        long startTime=System.currentTimeMillis();
+        int[][] solution = genetic.solve();
+        long endTime = System.currentTimeMillis();
+        if (solution != null) {
+            updatePuzzle(solution);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Solvable");
+            alert.setContentText("Solution found at generation "+genetic.getGeneration()+"\nin "+(endTime-startTime)+" milliseconds");
+            alert.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Unsolvable");
+            alert.setContentText("The puzzle was not solved");
+            alert.show();
+        }
     }
 
     @FXML
