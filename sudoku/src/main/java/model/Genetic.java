@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +19,42 @@ public class Genetic {
 
     public int[][] solve(){
         List<Individual> population= initializePopulation(initialIndividual);
-        
+
+        int generations = 0;
+        while (true) {
+
+            Collections.sort(population);
+            if (population.get(0).getFitness() == 0 ) {
+                setGeneration(generations);
+                return population.get(0).getIndividual();
+            }
+            List<Individual> newPopulation = new ArrayList<>();
+            for (int i = 0; i <populationSize; i += 3) {
+
+                for (int j=0 ; j < 3 ; j++){
+                    for (int k=j+1 ; k<3 ; k++){
+                        int[][] parent1 = population.get(i+j).getIndividual();
+                        int[][] parent2  = population.get(i+k).getIndividual();
+
+                        List<int[][]> child = crossover(parent1,parent2);
+                        int[][] ch1= mutate(child.get(0));
+                        newPopulation.add(new Individual(ch1,fitness(ch1)));
+
+                        int[][] ch2= mutate(child.get(1));
+                        newPopulation.add(new Individual(ch2,fitness(ch2)));
+                    }
+                }
+
+            }
+
+            population = newPopulation;
+            generations++;
+            if (generations > 8000) {
+                return null;
+            }
+        }
+
+
     }
 
     private void setGeneration(int generation){
@@ -116,5 +152,15 @@ public class Genetic {
         return child;
     }
 
+    private int[][] mutate(int[][] individual) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (initialIndividual[row][col] == 0 && random.nextDouble() < mutationRate) {
+                    individual[row][col] = random.nextInt(9) + 1;
+                }
+            }
+        }
+        return individual;
+    }
 
 }
