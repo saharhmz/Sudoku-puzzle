@@ -330,7 +330,23 @@ public class PuzzleController {
 
     @FXML
     void cspSolverHandler(ActionEvent event) {
-
+        int[][] population =getInitialIndividual();
+        CSP csp = new CSP();
+        long startTime=System.currentTimeMillis();
+        int[][] solution = csp.solve(population);
+        long endTime = System.currentTimeMillis();
+        if (solution != null) {
+            updatePuzzle(solution);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Solvable");
+            alert.setContentText("Solution found in "+(endTime-startTime)+" milliseconds");
+            alert.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Unsolvable");
+            alert.setContentText("The puzzle was not solved");
+            alert.show();
+        }
     }
     @FXML
     void resetHandler(ActionEvent event) {
