@@ -7,6 +7,34 @@ import java.util.Set;
 
 public class CSP {
 
+    public int[][] solve(int[][] initialBoard) {
+        int[][] board = copyBoard(initialBoard);
+        if (backtrack(board)) {
+            return board;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean backtrack(int[][] board) {
+        int[] emptyCell = selectUnassignedVariable(board);
+        if (emptyCell == null) {
+            return true;
+        }
+        int row = emptyCell[0];
+        int col = emptyCell[1];
+        List<Integer> orderedValues = orderValues(board, row, col);
+        for (int value : orderedValues) {
+            if (!thereIsConflict(board, row, col, value)) {
+                board[row][col] = value;
+                if (backtrack(board)) {
+                    return true;
+                }
+                board[row][col] = 0;
+            }
+        }
+        return false;
+    }
 
     // Minimum Remaining Values (MRV)
     private int[] selectUnassignedVariable(int[][] board) {
@@ -94,5 +122,13 @@ public class CSP {
             }
         }
         return false;
+    }
+
+    private int[][] copyBoard(int[][] board) {
+        int[][] copy = new int[board.length][];
+        for (int i = 0; i < board.length; i++) {
+            copy[i] = board[i].clone();
+        }
+        return copy;
     }
 }
