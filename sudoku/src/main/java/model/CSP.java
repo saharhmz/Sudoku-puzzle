@@ -44,4 +44,55 @@ public class CSP {
         }
         return new ArrayList<>(possibleValues);
     }
+
+    //Least Constraining Value
+    private List<Integer> orderValues(int[][] board, int row, int col) {
+        List<Integer> possibleValues = possibleValues(board, row, col);
+        possibleValues.sort((val1, val2) -> {
+            int conflicts1 = countNeighborConflicts(board, row, col, val1);
+            int conflicts2 = countNeighborConflicts(board, row, col, val2);
+            return Integer.compare(conflicts1, conflicts2);
+        });
+        return possibleValues;
+    }
+
+    private int countNeighborConflicts(int[][] board, int row, int col, int value) {
+        int conflicts = 0;
+        for (int i = 0; i < 9; i++) {
+            if (i != col && board[row][i] == 0 && thereIsConflict(board, row, i, value)) {
+                conflicts++;
+            }
+            if (i != row && board[i][col] == 0 && thereIsConflict(board, i, col, value)) {
+                conflicts++;
+            }
+        }
+        int boxRow = 3 * (row / 3);
+        int boxCol = 3 * (col / 3);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if ((boxRow + i != row || boxCol + j != col) && board[boxRow + i][boxCol + j] == 0 && thereIsConflict(board, boxRow + i, boxCol + j, value)) {
+                    conflicts++;
+                }
+            }
+        }
+        return conflicts;
+    }
+
+    private boolean thereIsConflict(int[][] board, int row, int col, int value) {
+        for (int i = 0; i < 9; i++) {
+            if (board[row][i] == value || board[i][col] == value) {
+                return true;
+            }
+        }
+        int boxRow = 3 * (row / 3);
+        int boxCol = 3 * (col / 3);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[boxRow + i][boxCol + j] == value) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
